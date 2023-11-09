@@ -2,6 +2,9 @@ package lottery.draw.springboot.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lottery.draw.springboot.common.Constants;
+import lottery.draw.springboot.dto.UserDTO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,11 +31,30 @@ public class UserController {
     @Resource
     private IUserService userService;
 
+    @PostMapping("/login")
+    public Result login(@RequestBody UserDTO userDTO){
+        String username = userDTO.getName();
+        String password = userDTO.getPassword();
+        if(StringUtils.isBlank(username) || StringUtils.isBlank(password)){
+            return Result.error(Constants.CODE_400,"参数错误");
+        }
+        UserDTO dto = userService.login(userDTO);
+        return Result.success(dto);
+    }
+    @PostMapping("/register")//需改进
+    public Result register(@RequestBody UserDTO userDTO){
+        String username = userDTO.getName();
+        String password = userDTO.getPassword();
+        if(StringUtils.isBlank(username) || StringUtils.isBlank(password)){
+            return Result.error(Constants.CODE_400,"参数错误");
+        }
+        return Result.success(userService.register(userDTO));
+    }
 
     @PostMapping
     public Result save(@RequestBody User user) {
-        userService.saveOrUpdate(user);
-        return Result.success();
+
+        return Result.success("sssss");
     }
 
     @DeleteMapping("/{id}")

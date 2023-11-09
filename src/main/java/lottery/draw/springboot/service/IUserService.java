@@ -1,5 +1,6 @@
 package lottery.draw.springboot.service;
 
+import lottery.draw.springboot.dto.UserDTO;
 import lottery.draw.springboot.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-10-24
  */
 public interface IUserService extends IService<User> {
+    UserDTO login(UserDTO userDTO);
 
+    User register(UserDTO userDTO);
 }
