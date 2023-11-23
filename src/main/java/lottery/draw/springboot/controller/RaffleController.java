@@ -2,9 +2,12 @@ package lottery.draw.springboot.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lottery.draw.springboot.vo.RaffleVO;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
 
@@ -30,9 +33,34 @@ public class RaffleController {
 
 
     @PostMapping
-    public Result save(@RequestBody Raffle raffle) {
-        raffleService.saveOrUpdate(raffle);
+    public Result save(@RequestBody RaffleVO raffleVO) {
+        if (Objects.isNull(raffleVO.getId())){
+            raffleService.raffleAdd(raffleVO);
+        }else{
+            raffleService.raffleUpdate(raffleVO);
+        }
+
         return Result.success();
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody RaffleVO raffleVO) {
+        return Result.success();
+    }
+
+    @PostMapping("/list")
+    public Result list(@RequestBody RaffleVO raffleVO) {
+        return Result.success(raffleService.raffleList(raffleVO));
+    }
+
+    @GetMapping("/{id}")
+    public Result findOne(@PathVariable String id) {
+        return Result.success(raffleService.raffleDetail(id));
+    }
+
+    @GetMapping("/getExit/{userId}")
+    public Result getExit(@PathVariable String userId) {
+        return Result.success(raffleService.raffleExit(userId));
     }
 
     @DeleteMapping("/{id}")
@@ -41,29 +69,7 @@ public class RaffleController {
         return Result.success();
     }
 
-    @PostMapping("/del/batch")
-    public Result deleteBatch(@RequestBody List<Integer> ids) {
-        raffleService.removeByIds(ids);
-        return Result.success();
-    }
 
-    @GetMapping
-    public Result findAll() {
-        return Result.success(raffleService.list());
-    }
-
-    @GetMapping("/{id}")
-    public Result findOne(@PathVariable Integer id) {
-        return Result.success(raffleService.getById(id));
-    }
-
-    @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum,
-    @RequestParam Integer pageSize) {
-        QueryWrapper<Raffle> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("id");
-        return Result.success(raffleService.page(new Page<>(pageNum, pageSize), queryWrapper));
-    }
 }
 
 

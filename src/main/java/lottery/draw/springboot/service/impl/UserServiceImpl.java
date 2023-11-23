@@ -3,16 +3,19 @@ package lottery.draw.springboot.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Constants;
-import lottery.draw.springboot.dto.UserDTO;
+import lottery.draw.springboot.vo.UserVO;
 import lottery.draw.springboot.entity.User;
+import lottery.draw.springboot.enums.RoleEnum;
 import lottery.draw.springboot.exception.ServiceException;
 import lottery.draw.springboot.mapper.UserMapper;
 import lottery.draw.springboot.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lottery.draw.springboot.utils.TokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -24,39 +27,57 @@ import java.util.Objects;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
-    public UserDTO login(UserDTO userDTO) {
-        User one = getUserInfo(userDTO);
+    public UserVO login(UserVO userVO) {
+        User one = getUserInfo(userVO);
         if (one != null) {
-            BeanUtil.copyProperties(one, userDTO, true);
+            BeanUtil.copyProperties(one, userVO, true);
 
             String token = TokenUtils.genToken(one.getId(), one.getPassword());
-            userDTO.setToken(token);
+            userVO.setToken(token);
 
-            return userDTO;
+            return userVO;
         } else {
             throw new ServiceException(Constants.CODE_600, "用户名或密码错误");
         }
     }
 
     @Override
-    public User register(UserDTO userDTO) {
+    public User register(UserVO userVO) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", userDTO.getName());
+        queryWrapper.eq("username", userVO.getUsername());
         if (Objects.nonNull(getOne(queryWrapper))){
             throw new ServiceException(Constants.CODE_600, "用户名被占用");
         }
 
-        User one = BeanUtil.copyProperties(userDTO, User.class);
+        User one = BeanUtil.copyProperties(userVO, User.class);
+
+        String salt = UUID.randomUUID().toString().toUpperCase();
+        String md5Password = getMd5Password(userVO.getPassword(), salt);
+        one.setSalt(salt);
+        one.setPassword(md5Password);
+
+        one.setCreateTime(new Date());
+        one.setRole(RoleEnum.USER.getCode());
         save(one);
         return one;
     }
 
-    private User getUserInfo(UserDTO userDTO) {
+    private User getUserInfo(UserVO userVO) {
 
+        User user = userMapper.getSaltByName(userVO.getUsername());
+        if(Objects.nonNull(user)){
+            userVO.setSalt(user.getSalt());
+            userVO.setPassword(getMd5Password(userVO.getPassword(),user.getSalt()));
+        }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", userDTO.getName());
-        queryWrapper.eq("password", userDTO.getPassword());
+        queryWrapper.eq("username", userVO.getUsername());
+        queryWrapper.eq("password", userVO.getPassword());
+        queryWrapper.eq("salt", userVO.getSalt());
         User one;
         try {
             one = getOne(queryWrapper);
@@ -64,5 +85,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_500, "系统错误");
         }
         return one;
+    }
+
+    public Map<String,User> getMapByUserIds(List<String> userIds) {
+        QueryWrapper<User> queryUser = new QueryWrapper<>();
+        queryUser.in("id",userIds);
+        List<User> users = this.list(queryUser);
+        Map<String,User> userMap = new HashMap<>();
+        for (User user : users) {
+            userMap.put(user.getId(),user);
+        }
+        return userMap;
+    }
+
+    /**
+     * 执行密码加密
+     *
+     * @param password 原始密码
+     * @param salt     盐值
+     * @return 加密后的密文
+     */
+    private String getMd5Password(String password, String salt) {
+        /*
+         * 加密规则：
+         * 1、无视原始密码的强度
+         * 2、使用UUID作为盐值，在原始密码的左右两侧拼接
+         * 3、循环加密3次
+         */
+        for (int i = 0; i < 3; i++) {
+            password = DigestUtils.md5DigestAsHex((salt + password + salt).getBytes()).toUpperCase();
+        }
+        return password;
     }
 }

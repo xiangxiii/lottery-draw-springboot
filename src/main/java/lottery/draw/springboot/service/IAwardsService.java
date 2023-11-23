@@ -2,6 +2,9 @@ package lottery.draw.springboot.service;
 
 import lottery.draw.springboot.entity.Awards;
 import com.baomidou.mybatisplus.extension.service.IService;
+import lottery.draw.springboot.vo.AwardsVO;
+
+import java.util.List;
 
 /**
  * <p>

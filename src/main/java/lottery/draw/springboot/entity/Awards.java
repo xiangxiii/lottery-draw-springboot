@@ -30,13 +30,14 @@ public class Awards implements Serializable {
       private String raffleId;
 
       @ApiModelProperty("奖品id")
-      private String prizeId;
+      private String prizeName;
 
       @ApiModelProperty("奖项名称")
-      private String name;
+      private String awardsName;
 
       @ApiModelProperty("奖项人数")
-      private String number;
+      private Integer number;
 
-
+      @ApiModelProperty("奖项排序")
+      private Integer sort;
 }

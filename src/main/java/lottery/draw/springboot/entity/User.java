@@ -1,8 +1,12 @@
 package lottery.draw.springboot.entity;
 
+import cn.hutool.core.date.DatePattern;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -28,7 +32,7 @@ public class User implements Serializable {
         private String id;
 
       @ApiModelProperty("用户名")
-      private String name;
+      private String username;
 
       @ApiModelProperty("用户编码")
       private String code;
@@ -37,10 +41,12 @@ public class User implements Serializable {
       private String phone;
 
       @ApiModelProperty("创建时间")
-      private LocalDateTime createTime;
+      @JSONField(format = DatePattern.NORM_DATETIME_PATTERN)
+      private Date createTime;
 
       @ApiModelProperty("修改时间")
-      private LocalDateTime updateTime;
+      @JSONField(format = DatePattern.NORM_DATETIME_PATTERN)
+      private Date updateTime;
 
       @ApiModelProperty("余额")
       private String money;
@@ -51,5 +57,15 @@ public class User implements Serializable {
       @ApiModelProperty("密码")
       private String password;
 
+      @ApiModelProperty("盐值")
+      private String salt;
 
+      @ApiModelProperty("角色")
+      private String role;
+
+      @ApiModelProperty("性别")
+      private String sex;
+
+      @ApiModelProperty("昵称")
+      private String nickname;
 }

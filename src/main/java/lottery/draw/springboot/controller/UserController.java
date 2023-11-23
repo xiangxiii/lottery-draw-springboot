@@ -1,9 +1,10 @@
 package lottery.draw.springboot.controller;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lottery.draw.springboot.common.Constants;
-import lottery.draw.springboot.dto.UserDTO;
+import lottery.draw.springboot.vo.UserVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -32,29 +33,29 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/login")
-    public Result login(@RequestBody UserDTO userDTO){
-        String username = userDTO.getName();
-        String password = userDTO.getPassword();
+    public Result login(@RequestBody UserVO userVO){
+        String username = userVO.getUsername();
+        String password = userVO.getPassword();
         if(StringUtils.isBlank(username) || StringUtils.isBlank(password)){
             return Result.error(Constants.CODE_400,"参数错误");
         }
-        UserDTO dto = userService.login(userDTO);
+        UserVO dto = userService.login(userVO);
         return Result.success(dto);
     }
     @PostMapping("/register")//需改进
-    public Result register(@RequestBody UserDTO userDTO){
-        String username = userDTO.getName();
-        String password = userDTO.getPassword();
+    public Result register(@RequestBody UserVO userVO){
+        String username = userVO.getUsername();
+        String password = userVO.getPassword();
         if(StringUtils.isBlank(username) || StringUtils.isBlank(password)){
             return Result.error(Constants.CODE_400,"参数错误");
         }
-        return Result.success(userService.register(userDTO));
+        return Result.success(userService.register(userVO));
     }
 
-    @PostMapping
-    public Result save(@RequestBody User user) {
-
-        return Result.success("sssss");
+    @PostMapping("/update")
+    public Result save(@RequestBody UserVO user) {
+        userService.updateById(BeanUtil.copyProperties(user, User.class));
+        return Result.success("update");
     }
 
     @DeleteMapping("/{id}")

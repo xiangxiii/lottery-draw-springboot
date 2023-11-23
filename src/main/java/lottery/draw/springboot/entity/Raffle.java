@@ -1,10 +1,15 @@
 package lottery.draw.springboot.entity;
 
+import cn.hutool.core.date.DatePattern;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,8 +41,21 @@ public class Raffle implements Serializable {
       @ApiModelProperty("开奖时间")
       private LocalDateTime time;
 
-      @ApiModelProperty("抽奖限定人数")
-      private String number;
+      @ApiModelProperty("抽奖人数")
+      private Integer number;
 
+      @ApiModelProperty("抽奖限定人数")
+      private String maxNumber;
+
+      @ApiModelProperty("创建时间")
+      @JSONField(format = DatePattern.NORM_DATETIME_PATTERN)
+      private Date createTime;
+
+      @ApiModelProperty("修改时间")
+      @JSONField(format = DatePattern.NORM_DATETIME_PATTERN)
+      private Date updateTime;
+
+      @ApiModelProperty("状态")
+      private String state;
 
 }
