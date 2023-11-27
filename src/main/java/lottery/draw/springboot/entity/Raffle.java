@@ -9,7 +9,6 @@ import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,7 +44,7 @@ public class Raffle implements Serializable {
       private Integer number;
 
       @ApiModelProperty("抽奖限定人数")
-      private String maxNumber;
+      private Integer maxNumber;
 
       @ApiModelProperty("创建时间")
       @JSONField(format = DatePattern.NORM_DATETIME_PATTERN)

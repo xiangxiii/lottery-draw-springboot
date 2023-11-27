@@ -52,9 +52,9 @@ public class AwardsController {
         return Result.success(awardsService.list());
     }
 
-    @GetMapping("/{id}")
-    public Result findOne(@PathVariable Integer id) {
-        return Result.success(awardsService.getById(id));
+    @GetMapping("/{raffleId}")
+    public Result findOne(@PathVariable String raffleId) {
+        return Result.success(awardsService.getAwardsByRaffle(raffleId));
     }
 
     @GetMapping("/page")

@@ -2,7 +2,6 @@ package lottery.draw.springboot.vo;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class RaffleVO {
 
     private String state;
 
-    private LocalDateTime time;
+    private String datetime;
 
     private String number;
 

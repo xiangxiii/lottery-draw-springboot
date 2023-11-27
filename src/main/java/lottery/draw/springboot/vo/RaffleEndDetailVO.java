@@ -2,14 +2,17 @@ package lottery.draw.springboot.vo;
 
 import lombok.Data;
 
+import java.util.List;
 
 /**
  * @author liux
- * @date 2023/11/9 15:29
+ * @date 2023/11/27 20:06
  */
 @Data
-public class RaffleListVO {
+public class RaffleEndDetailVO {
     private String id;
+
+    private String userId;
 
     private String userName;
 
@@ -23,5 +26,5 @@ public class RaffleListVO {
 
     private String maxNumber;
 
-    private AwardsVO awardsVO;
+    private List<AwardsUserVO> awardsUserVOList;
 }

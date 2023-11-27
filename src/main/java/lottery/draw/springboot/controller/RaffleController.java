@@ -1,20 +1,15 @@
 package lottery.draw.springboot.controller;
 
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lottery.draw.springboot.vo.RaffleVO;
+import lottery.draw.springboot.vo.UserJoinVO;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Objects;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
 
 
 import lottery.draw.springboot.service.IRaffleService;
-import lottery.draw.springboot.entity.Raffle;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -69,7 +64,22 @@ public class RaffleController {
         return Result.success();
     }
 
+    @PostMapping("/join")
+    public Result join(@RequestBody UserJoinVO userJoinVO) {
+        raffleService.joinRaffle(userJoinVO);
+        return Result.success();
+    }
 
+    @PostMapping("/runRaffle")
+    public Result runRaffle(@RequestBody RaffleVO raffleVO) {
+        raffleService.runRaffle(raffleVO);
+        return Result.success();
+    }
+
+    @GetMapping("/endDetail/{raffleId}")
+    public Result getDetail(@PathVariable String raffleId) {
+        return Result.success(raffleService.getRaffleEndDetail(raffleId));
+    }
 }
 
 
