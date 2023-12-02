@@ -38,10 +38,6 @@ public class RaffleController {
         return Result.success();
     }
 
-    @PostMapping("/update")
-    public Result update(@RequestBody RaffleVO raffleVO) {
-        return Result.success();
-    }
 
     @PostMapping("/list")
     public Result list(@RequestBody RaffleVO raffleVO) {
@@ -59,8 +55,8 @@ public class RaffleController {
     }
 
     @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id) {
-        raffleService.removeById(id);
+    public Result delete(@PathVariable String id) {
+        raffleService.delete(id);
         return Result.success();
     }
 
@@ -76,10 +72,7 @@ public class RaffleController {
         return Result.success();
     }
 
-    @GetMapping("/endDetail/{raffleId}")
-    public Result getDetail(@PathVariable String raffleId) {
-        return Result.success(raffleService.getRaffleEndDetail(raffleId));
-    }
+
 }
 
 

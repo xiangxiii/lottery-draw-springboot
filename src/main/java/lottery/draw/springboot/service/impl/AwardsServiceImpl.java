@@ -3,13 +3,16 @@ package lottery.draw.springboot.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.entity.*;
+import lottery.draw.springboot.enums.SignEnum;
 import lottery.draw.springboot.mapper.AwardsMapper;
 import lottery.draw.springboot.mapper.RaffleMapper;
 import lottery.draw.springboot.service.IAwardsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lottery.draw.springboot.service.IUserService;
+import lottery.draw.springboot.vo.AwardsUserGetVO;
 import lottery.draw.springboot.vo.AwardsUserVO;
 import lottery.draw.springboot.vo.AwardsVO;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,9 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
 
     @Autowired
     private AwardsMapper awardsMapper;
+
+    @Autowired
+    private AwardsServiceImpl awardsService;
 
     @Autowired
     private RaffleMapper raffleMapper;
@@ -70,13 +76,15 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
     }
 
     public Map<String, AwardsVO> getMapByRaffle(List<String> raffleIds,String sort) {
+        if (CollectionUtils.isEmpty(raffleIds)){
+            return new HashMap<>();
+        }
         Map<String, AwardsVO> awardsVOMap = new HashMap<>();
         QueryWrapper<Awards> queryAward = new QueryWrapper<>();
         queryAward.in("raffle_id",raffleIds);
         if (Objects.nonNull(sort)){
             queryAward.eq("sort",sort);
         }
-
         List<Awards> awardsList = this.list(queryAward);
         for (Awards awards : awardsList) {
             AwardsVO awardsVO = BeanUtil.copyProperties(awards,AwardsVO.class);
@@ -122,6 +130,7 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     awardsUser.setAwardId(award.getId());
                     awardsUser.setWinTime(new Date());
                     awardsUser.setRaffleId(raffle.getId());
+                    awardsUser.setHome("未填写地址");
                     awardsUser.setSign("0");
                     awardsUsers.add(awardsUser);
                     userids.remove(key);
@@ -154,11 +163,35 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
             AwardsUserVO awardsUserVO = BeanUtil.copyProperties(award,AwardsUserVO.class);
             List<AwardsUser> awardsUsers = awardsMapper.selectAwardUser(award);
             List<String> userId = awardsUsers.stream().map(AwardsUser::getUserId).collect(Collectors.toList());
-            List<User> users = userService.listByIds(userId);
-            awardsUserVO.setUserList(users);
+            if (CollectionUtils.isNotEmpty(userId)){
+                List<User> users = userService.listByIds(userId);
+                awardsUserVO.setUserList(users);
+            }
             list.add(awardsUserVO);
         }
 
         return list;
+    }
+
+    @Override
+    public List<AwardsUserGetVO> getAwardsByUser(String userId) {
+        List<AwardsUserGetVO> list = new ArrayList<>();
+        List<AwardsUser> awardUserByUser = awardsMapper.getAwardUserByUser(userId);
+        for (AwardsUser awardsUser : awardUserByUser) {
+            AwardsUserGetVO awardsUserGetVO = BeanUtil.copyProperties(awardsUser,AwardsUserGetVO.class);
+            User user = userService.getById(userId);
+            awardsUserGetVO.setUserName(user.getUsername());
+            Awards awards = awardsService.getById(awardsUser.getAwardId());
+            awardsUserGetVO.setPrizeName(awards.getPrizeName());
+            awardsUserGetVO.setSign(SignEnum.ofCode(awardsUserGetVO.getSign()).getMessage());
+            list.add(awardsUserGetVO);
+        }
+        return list;
+    }
+
+    @Override
+    public void updateMyAward(AwardsUserGetVO awardsUserGetVO) {
+        AwardsUser awardsUser = BeanUtil.copyProperties(awardsUserGetVO,AwardsUser.class);
+        awardsMapper.updateAwardsUser(awardsUser);
     }
 }

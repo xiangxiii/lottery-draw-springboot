@@ -15,6 +15,12 @@
             </trim>
         </foreach>
     </insert>
+    <update id="updateAwardsUser">
+        UPDATE tb_awards_user
+        SET home=#{home},
+            sign=#{sigm}
+        WHERE id=#{id};
+    </update>
 
     <select id="selectAwardUser" resultType="lottery.draw.springboot.entity.AwardsUser">
         select * from tb_awards_user
@@ -26,6 +32,11 @@
                 AND award_id = #{id,jdbcType=VARCHAR}
             </if>
         </where>
+    </select>
+
+    <select id="getAwardUserByUser" resultType="lottery.draw.springboot.entity.AwardsUser">
+        select * from tb_awards_user
+        where user_id = #{userId,jdbcType=VARCHAR}
     </select>
 
 </mapper>

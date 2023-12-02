@@ -47,8 +47,8 @@ public enum StateEnum {
         return result;
     }
 
-    public static StateEnum ofName(String name) {
-        StateEnum result = map2.get(name);
+    public static StateEnum ofName(String message) {
+        StateEnum result = map2.get(message);
         return result;
     }
 }

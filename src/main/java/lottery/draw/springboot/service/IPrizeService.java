@@ -2,6 +2,10 @@ package lottery.draw.springboot.service;
 
 import lottery.draw.springboot.entity.Prize;
 import com.baomidou.mybatisplus.extension.service.IService;
+import lottery.draw.springboot.entity.Station;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -12,5 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-10-24
  */
 public interface IPrizeService extends IService<Prize> {
+    List<Map<String, Object>> getmap();
 
+    List<Station> getlist();
 }

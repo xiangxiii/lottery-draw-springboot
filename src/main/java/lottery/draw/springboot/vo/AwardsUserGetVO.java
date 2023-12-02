@@ -1,25 +1,31 @@
-package lottery.draw.springboot.entity;
+package lottery.draw.springboot.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lottery.draw.springboot.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
+ * 用于展示抽奖活动中详细信息
  * @author liux
- * @date 2023/11/27 16:54
+ * @date 2023/11/27 19:18
  */
 @Data
-public class AwardsUser {
+public class AwardsUserGetVO {
     @ApiModelProperty("id")
     private String id;
 
     @ApiModelProperty("参与者Id")
     private String userId;
 
-    @ApiModelProperty("抽奖活动id")
+    @ApiModelProperty("抽奖奖项id")
     private String awardId;
+
+    @ApiModelProperty("奖品名称")
+    private String prizeName;
 
     @ApiModelProperty("中奖时间")
     private Date winTime;
@@ -33,7 +39,7 @@ public class AwardsUser {
     @ApiModelProperty("抽奖活动id")
     private String raffleId;
 
-    @ApiModelProperty("收货地址")
-    private String home;
+    private String userName;
 
+    private String home;
 }

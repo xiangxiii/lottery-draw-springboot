@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lottery.draw.springboot.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 
 import java.util.*;
@@ -88,6 +89,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     public Map<String,User> getMapByUserIds(List<String> userIds) {
+        if (CollectionUtils.isEmpty(userIds)){
+            return new HashMap<>();
+        }
         QueryWrapper<User> queryUser = new QueryWrapper<>();
         queryUser.in("id",userIds);
         List<User> users = this.list(queryUser);

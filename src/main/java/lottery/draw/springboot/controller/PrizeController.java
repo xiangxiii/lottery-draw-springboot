@@ -2,9 +2,14 @@ package lottery.draw.springboot.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lottery.draw.springboot.entity.Station;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
 
@@ -29,10 +34,10 @@ public class PrizeController {
     private IPrizeService prizeService;
 
 
+
     @PostMapping
     public Result save(@RequestBody Prize prize) {
-        prizeService.saveOrUpdate(prize);
-        return Result.success();
+        return Result.success(prizeService.getlist());
     }
 
     @DeleteMapping("/{id}")

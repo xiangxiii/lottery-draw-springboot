@@ -2,6 +2,8 @@ package lottery.draw.springboot.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lottery.draw.springboot.service.ICityService;
+import lottery.draw.springboot.vo.AwardsUserGetVO;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -27,29 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AwardsController {
     @Resource
     private IAwardsService awardsService;
+    @Resource
+    private ICityService cityService;
 
-
-    @PostMapping
-    public Result save(@RequestBody Awards awards) {
-        awardsService.saveOrUpdate(awards);
-        return Result.success();
-    }
-
-    @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id) {
-        awardsService.removeById(id);
-        return Result.success();
-    }
-
-    @PostMapping("/del/batch")
-    public Result deleteBatch(@RequestBody List<Integer> ids) {
-        awardsService.removeByIds(ids);
-        return Result.success();
-    }
-
-    @GetMapping
-    public Result findAll() {
-        return Result.success(awardsService.list());
+    @PostMapping("/byUser")
+    public Result deleteBatch(@RequestBody String userId) {
+        return Result.success(awardsService.getAwardsByUser(userId));
     }
 
     @GetMapping("/{raffleId}")
@@ -64,6 +49,20 @@ public class AwardsController {
         queryWrapper.orderByDesc("id");
         return Result.success(awardsService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
+
+    @PostMapping("/updateMyAward")
+    public Result updateMyAward(@RequestBody AwardsUserGetVO awardsUserGetVO) {
+        awardsService.updateMyAward(awardsUserGetVO);
+        return Result.success();
+    }
+
+    @PostMapping("/city")
+    public Result cityList(@RequestBody String id) {
+
+        return Result.success(cityService.cityList());
+    }
+
+
 }
 
 

@@ -18,4 +18,8 @@ public interface AwardsMapper extends BaseMapper<Awards> {
     void addAwardsUser(List<AwardsUser> awardsUser);
 
     List<AwardsUser> selectAwardUser(Awards award);
+
+    List<AwardsUser> getAwardUserByUser(String userId);
+
+    void updateAwardsUser(AwardsUser awardUser);
 }

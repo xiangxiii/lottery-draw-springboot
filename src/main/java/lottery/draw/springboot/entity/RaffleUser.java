@@ -20,4 +20,7 @@ public class RaffleUser {
 
     @ApiModelProperty("编号")
     private Integer sort;
+
+    @ApiModelProperty("实名")
+    private String realName;
 }

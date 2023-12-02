@@ -1,6 +1,7 @@
 package lottery.draw.springboot.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Constants;
 import lottery.draw.springboot.entity.Awards;
@@ -13,9 +14,10 @@ import lottery.draw.springboot.mapper.RaffleMapper;
 import lottery.draw.springboot.service.IRaffleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lottery.draw.springboot.vo.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -98,6 +100,12 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         if (Objects.nonNull(raffleVO.getState())){
             queryWrapper.eq("state", raffleVO.getState());
         }
+        if (Objects.nonNull(raffleVO.getJoinUserId())){
+            List<RaffleUser> listRaffleUser = raffleMapper.getListRaffleUser(null, raffleVO.getJoinUserId());
+            List<String> ids = listRaffleUser.stream().map(RaffleUser::getRaffleId).collect(Collectors.toList());
+            queryWrapper.in("id", ids);
+        }
+        queryWrapper.ne("state","1");
         List<Raffle> raffles = this.list(queryWrapper);
 
         //根据用户id获取用户列表信息
@@ -115,6 +123,7 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             raffleListVO.setAwardsVO(raffleMap.get(raffle.getId()));
             raffleListVO.setState(StateEnum.ofCode(raffleListVO.getState()).getMessage());
             raffleListVO.setDatetime(raffle.getTime().format(formatter));
+            raffleListVO.setNickname(userMap.get(raffle.getUserId()).getNickname());
             raffleListVOS.add(raffleListVO);
         }
 
@@ -134,6 +143,17 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         raffleVO.setAwardsVOS(awardsVOS);
         raffleVO.setUserName(userService.getById(raffle.getUserId()).getUsername());
         raffleVO.setDatetime(raffle.getTime().format(formatterDaily));
+
+        List<RaffleUser> listRaffleUser = raffleMapper.getListRaffleUser(raffleId, null);
+        List<String> collect = listRaffleUser.stream().map(RaffleUser::getUserId).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(collect)){
+            List<User> users = userService.listByIds(collect);
+            raffleVO.setUserList(users);
+        }
+
+        if (StringUtils.equals(raffle.getState(),"3")||StringUtils.equals(raffle.getState(),"4")){
+            raffleVO.setAwardsUserVOList(awardsService.getAwardsByRaffle(raffleId));
+        }
         return raffleVO;
     }
 
@@ -146,7 +166,7 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         if (CollectionUtils.isEmpty(raffles)){
             RaffleVO raffleVO = new RaffleVO();
             raffleVO.setUserId(userId);
-            raffleVO.setType("定时抽奖");
+            raffleVO.setType("1");
             raffleVO.setMaxNumber("100");
             raffleVO.setState(StateEnum.EXIT.getMessage());
             List<AwardsVO> awardsVOS = new ArrayList<>();
@@ -199,6 +219,9 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
     @Override
     public void runRaffle(RaffleVO raffleVO) {
         Raffle raffle = raffleService.getById(raffleVO.getId());
+        if (!StringUtils.equals(raffle.getState(),"2")){
+            throw new ServiceException(Constants.CODE_600, "当前抽奖不能开奖");
+        }
         //奖品分配
         awardsService.allocationAwards(raffle);
         raffle.setState("3");
@@ -208,10 +231,11 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
     }
 
     @Override
-    public RaffleEndDetailVO getRaffleEndDetail(String raffleId) {
-        RaffleVO raffleVO = this.raffleDetail(raffleId);
-        RaffleEndDetailVO result = BeanUtil.copyProperties(raffleVO,RaffleEndDetailVO.class);
-        result.setAwardsUserVOList(awardsService.getAwardsByRaffle(raffleId));
-        return result;
+    public void delete(String id) {
+        if (CollectionUtils.isEmpty(raffleMapper.getListRaffleUser(id,null))){
+            this.removeById(id);
+        }else{
+            throw new ServiceException(Constants.CODE_600, "有参与者不能删除");
+        }
     }
 }
