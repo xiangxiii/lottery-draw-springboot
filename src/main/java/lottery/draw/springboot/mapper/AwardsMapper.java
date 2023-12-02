@@ -3,6 +3,7 @@ package lottery.draw.springboot.mapper;
 import lottery.draw.springboot.entity.Awards;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import lottery.draw.springboot.entity.AwardsUser;
+import lottery.draw.springboot.vo.AwardsUserGetVO;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface AwardsMapper extends BaseMapper<Awards> {
 
     List<AwardsUser> selectAwardUser(Awards award);
 
-    List<AwardsUser> getAwardUserByUser(String userId);
+    List<AwardsUser> getAwardUserByUser(AwardsUserGetVO awardsUserGetVO);
 
     void updateAwardsUser(AwardsUser awardUser);
 }

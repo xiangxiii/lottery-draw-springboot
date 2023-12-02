@@ -43,12 +43,10 @@ public enum StateEnum {
     }
 
     public static StateEnum ofCode(String code) {
-        StateEnum result = map.get(code);
-        return result;
+        return map.get(code);
     }
 
     public static StateEnum ofName(String message) {
-        StateEnum result = map2.get(message);
-        return result;
+        return map2.get(message);
     }
 }

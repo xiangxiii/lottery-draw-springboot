@@ -1,6 +1,5 @@
 package lottery.draw.springboot.vo;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 
@@ -17,5 +16,5 @@ public class UserVO {
     private String sex;
     private String phone;
     private String avatar;
-
+    private String home;
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 public enum SignEnum {
     WFH("0","未发货"),
     YFH("1","已发货"),
-    YQS("2","已签收"),
+    YQS("-1","已签收"),
 
     ;
     private String code;
@@ -42,12 +42,10 @@ public enum SignEnum {
     }
 
     public static SignEnum ofCode(String code) {
-        SignEnum result = map.get(code);
-        return result;
+        return map.get(code);
     }
 
     public static SignEnum ofName(String message) {
-        SignEnum result = map2.get(message);
-        return result;
+        return map2.get(message);
     }
 }

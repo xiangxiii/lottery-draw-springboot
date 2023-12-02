@@ -6,7 +6,6 @@ import lottery.draw.springboot.service.ICityService;
 import lottery.draw.springboot.vo.AwardsUserGetVO;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
-import java.util.List;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
 
@@ -33,8 +32,8 @@ public class AwardsController {
     private ICityService cityService;
 
     @PostMapping("/byUser")
-    public Result deleteBatch(@RequestBody String userId) {
-        return Result.success(awardsService.getAwardsByUser(userId));
+    public Result deleteBatch(@RequestBody AwardsUserGetVO awardsUserGetVO) {
+        return Result.success(awardsService.getAwardsByUser(awardsUserGetVO));
     }
 
     @GetMapping("/{raffleId}")

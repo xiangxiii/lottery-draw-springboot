@@ -36,4 +36,7 @@ public class AwardsUser {
     @ApiModelProperty("收货地址")
     private String home;
 
+    @ApiModelProperty("发奖者")
+    private String initiator;
+
 }

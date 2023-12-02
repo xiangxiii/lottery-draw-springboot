@@ -4,7 +4,6 @@ import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import io.swagger.annotations.ApiModel;
@@ -52,7 +51,7 @@ public class User implements Serializable {
       private String money;
 
       @ApiModelProperty("保留位")
-      private String reserve;
+      private String home;
 
       @ApiModelProperty("密码")
       private String password;

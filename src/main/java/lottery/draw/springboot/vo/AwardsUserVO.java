@@ -23,4 +23,6 @@ public class AwardsUserVO {
     private Integer sort;
 
     private List<User> userList;
+
+    private String initiator;
 }

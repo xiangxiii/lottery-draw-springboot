@@ -2,7 +2,6 @@ package lottery.draw.springboot.service;
 
 import lottery.draw.springboot.entity.Awards;
 import com.baomidou.mybatisplus.extension.service.IService;
-import lottery.draw.springboot.entity.AwardsUser;
 import lottery.draw.springboot.vo.AwardsUserGetVO;
 import lottery.draw.springboot.vo.AwardsUserVO;
 
@@ -36,7 +35,7 @@ public interface IAwardsService extends IService<Awards> {
      * @author liux
      * @date 2023/11/27 20:30
      */
-    List<AwardsUserGetVO> getAwardsByUser(String raffleId);
+    List<AwardsUserGetVO> getAwardsByUser(AwardsUserGetVO awardsUserGetVO);
 
     /**
      * 改变中奖信息
@@ -47,4 +46,6 @@ public interface IAwardsService extends IService<Awards> {
      * @date 2023/11/30 21:06
      */
     void updateMyAward(AwardsUserGetVO awardsUserGetVO);
+
+
 }

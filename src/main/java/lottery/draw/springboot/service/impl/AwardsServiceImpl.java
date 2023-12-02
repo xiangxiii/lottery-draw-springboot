@@ -108,9 +108,17 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
         List<RaffleUser> listRaffleUser = raffleMapper.getListRaffleUser(raffle.getId(),"");
         //存储参加用户和编号
         Map<Integer,String> userids = new HashMap<>();
+        List<String> ids = new ArrayList<>();
         for (RaffleUser raffleUser : listRaffleUser) {
             userids.put(raffleUser.getSort(),raffleUser.getUserId());
+            ids.add(raffleUser.getUserId());
         }
+        List<User> users = userService.listByIds(ids);
+        Map<String,User> userMap= new HashMap<>();
+        for (User user : users) {
+            userMap.put(user.getId(),user);
+        }
+
         Random ran=new Random();
         //遍历所有奖项
         int remainder = allNum;
@@ -130,7 +138,8 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     awardsUser.setAwardId(award.getId());
                     awardsUser.setWinTime(new Date());
                     awardsUser.setRaffleId(raffle.getId());
-                    awardsUser.setHome("未填写地址");
+                    awardsUser.setInitiator(raffle.getUserId());
+                    awardsUser.setHome(userMap.get(awardsUser.getUserId()).getHome());
                     awardsUser.setSign("0");
                     awardsUsers.add(awardsUser);
                     userids.remove(key);
@@ -174,13 +183,13 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
     }
 
     @Override
-    public List<AwardsUserGetVO> getAwardsByUser(String userId) {
+    public List<AwardsUserGetVO> getAwardsByUser(AwardsUserGetVO vo) {
         List<AwardsUserGetVO> list = new ArrayList<>();
-        List<AwardsUser> awardUserByUser = awardsMapper.getAwardUserByUser(userId);
+        List<AwardsUser> awardUserByUser = awardsMapper.getAwardUserByUser(vo);
         for (AwardsUser awardsUser : awardUserByUser) {
             AwardsUserGetVO awardsUserGetVO = BeanUtil.copyProperties(awardsUser,AwardsUserGetVO.class);
-            User user = userService.getById(userId);
-            awardsUserGetVO.setUserName(user.getUsername());
+            User user = userService.getById(awardsUserGetVO.getUserId());
+            awardsUserGetVO.setNickname(user.getNickname());
             Awards awards = awardsService.getById(awardsUser.getAwardId());
             awardsUserGetVO.setPrizeName(awards.getPrizeName());
             awardsUserGetVO.setSign(SignEnum.ofCode(awardsUserGetVO.getSign()).getMessage());
@@ -192,6 +201,10 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
     @Override
     public void updateMyAward(AwardsUserGetVO awardsUserGetVO) {
         AwardsUser awardsUser = BeanUtil.copyProperties(awardsUserGetVO,AwardsUser.class);
+        if (Objects.nonNull(SignEnum.ofName(awardsUserGetVO.getSign()))){
+            awardsUser.setSign(SignEnum.ofName(awardsUserGetVO.getSign()).getCode());
+        }
         awardsMapper.updateAwardsUser(awardsUser);
     }
+
 }
