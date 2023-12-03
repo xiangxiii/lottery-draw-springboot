@@ -72,6 +72,16 @@ public class RaffleController {
         return Result.success();
     }
 
+    @PostMapping("/raffleUserList")
+    public Result raffleUserList(@RequestBody String raffleId) {
+        return Result.success(raffleService.raffleUserList(raffleId));
+    }
+
+    @PostMapping("/outRaffle")
+    public Result outRaffle(@RequestBody UserJoinVO userJoinVO) {
+        raffleService.outRaffle(userJoinVO);
+        return Result.success();
+    }
 
 }
 

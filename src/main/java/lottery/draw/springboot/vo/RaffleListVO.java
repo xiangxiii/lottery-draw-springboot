@@ -26,4 +26,6 @@ public class RaffleListVO {
     private AwardsVO awardsVO;
 
     private String nickname;
+
+
 }

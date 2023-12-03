@@ -7,6 +7,12 @@
         VALUES(#{raffleId},#{userId},#{sort});
     </insert>
 
+    <delete id="outRaffle">
+        delete from tb_raffle_user
+        where raffle_id = #{raffleId}
+        and user_id = #{userId}
+    </delete>
+
     <select id="getRaffleUser" resultType="lottery.draw.springboot.entity.RaffleUser">
         select * from tb_raffle_user
         where raffle_id = #{raffleId}

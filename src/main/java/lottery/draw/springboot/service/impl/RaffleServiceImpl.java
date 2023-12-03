@@ -93,6 +93,8 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
 
     @Override
     public List<RaffleListVO> raffleList(RaffleVO raffleVO) {
+        this.timeRunRaffle();
+
         QueryWrapper<Raffle> queryWrapper = new QueryWrapper<>();
         if (Objects.nonNull(raffleVO.getUserId())){
             queryWrapper.eq("user_id", raffleVO.getUserId());
@@ -238,4 +240,46 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             throw new ServiceException(Constants.CODE_600, "有参与者不能删除");
         }
     }
+
+    @Override
+    public void outRaffle(UserJoinVO userJoinVO) {
+        raffleMapper.outRaffle(userJoinVO.getRaffleId(),userJoinVO.getUserId());
+    }
+
+    @Override
+    public List<RaffleUserVO> raffleUserList(String raffleId) {
+        List<RaffleUser> listRaffleUser = raffleMapper.getListRaffleUser(raffleId, null);
+        List<RaffleUserVO> list = new ArrayList<>();
+        List<String> userIds = new ArrayList<>();
+        for (RaffleUser raffleUser : listRaffleUser) {
+            userIds.add(raffleUser.getUserId());
+        }
+        if (CollectionUtils.isEmpty(userIds)){
+            return new ArrayList<>();
+        }
+        List<User> users = userService.listByIds(userIds);
+        Map<String,User> userMap = new HashMap<>();
+        for (User user : users) {
+            userMap.put(user.getId(),user);
+        }
+        for (RaffleUser raffleUser : listRaffleUser) {
+            RaffleUserVO vo = BeanUtil.copyProperties(raffleUser,RaffleUserVO.class);
+            vo.setNickname(userMap.get(vo.getUserId()).getNickname());
+            vo.setUsername(userMap.get(vo.getUserId()).getUsername());
+            list.add(vo);
+        }
+        return list;
+    }
+
+    public void timeRunRaffle(){
+        QueryWrapper<Raffle> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lt("time",new Date());
+        queryWrapper.eq("state", "2");
+        List<Raffle> list = this.list(queryWrapper);
+        for (Raffle raffle : list) {
+            this.runRaffle(BeanUtil.copyProperties(raffle,RaffleVO.class));
+        }
+    }
+
+
 }

@@ -35,6 +35,8 @@ public interface RaffleMapper extends BaseMapper<Raffle> {
      */
     RaffleUser getRaffleUser(String raffleId,String userId);
 
+    void outRaffle(String raffleId,String userId);
+
     /**
      * 抽奖信息查询
      * @param

@@ -1,5 +1,6 @@
 package lottery.draw.springboot.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -15,4 +16,7 @@ public class AwardsVO {
     private String prizeName;
 
     private Integer sort;
+
+    @ApiModelProperty("奖品图片")
+    private String avatar;
 }

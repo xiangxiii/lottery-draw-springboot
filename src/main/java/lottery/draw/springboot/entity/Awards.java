@@ -40,4 +40,7 @@ public class Awards implements Serializable {
 
       @ApiModelProperty("奖项排序")
       private Integer sort;
+
+      @ApiModelProperty("奖品图片")
+      private String avatar;
 }

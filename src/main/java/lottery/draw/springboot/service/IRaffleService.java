@@ -3,6 +3,7 @@ package lottery.draw.springboot.service;
 import lottery.draw.springboot.entity.Raffle;
 import com.baomidou.mybatisplus.extension.service.IService;
 import lottery.draw.springboot.vo.RaffleListVO;
+import lottery.draw.springboot.vo.RaffleUserVO;
 import lottery.draw.springboot.vo.RaffleVO;
 import lottery.draw.springboot.vo.UserJoinVO;
 
@@ -98,4 +99,16 @@ public interface IRaffleService extends IService<Raffle> {
      * @date 2023/11/30 20:05
      */
     void delete(String id);
+    
+    /**
+     * 踢出用户
+     * @param
+     * @throws
+     * @return 
+     * @author liux
+     * @date 2023/12/3 21:02
+     */
+    void outRaffle(UserJoinVO userJoinVO);
+
+    List<RaffleUserVO> raffleUserList(String raffleId);
 }

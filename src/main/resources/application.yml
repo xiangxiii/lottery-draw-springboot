@@ -1,0 +1,26 @@
+#spring.datasource.url=jdbc:mysql://10.130.5.188:3306/LightV2/velocityServlet?serverTimezone=GMT%2b8
+## 数据库用户名&密码：
+#spring.datasource.username=root
+#spring.datasource.password=ww13588441007
+server:
+  port: 9090
+ip: localhost
+# 数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root   #你本地的数据库用户名
+    password: root  #你本地的数据库密码
+    url: jdbc:mysql://localhost:3306/lottery_draw?serverTimezone=GMT%2b8
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+# 配置mybatis实体和xml映射
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: lottery.draw.springboot.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
