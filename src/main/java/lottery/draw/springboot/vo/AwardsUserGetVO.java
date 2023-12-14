@@ -43,4 +43,7 @@ public class AwardsUserGetVO {
 
     @ApiModelProperty("发起人")
     private String initiator;
+
+    @ApiModelProperty("举报")
+    private String report;
 }

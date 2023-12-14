@@ -113,7 +113,10 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
             userids.put(raffleUser.getSort(),raffleUser.getUserId());
             ids.add(raffleUser.getUserId());
         }
-        List<User> users = userService.listByIds(ids);
+        List<User> users = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(ids)){
+            users = userService.listByIds(ids);
+        }
         Map<String,User> userMap= new HashMap<>();
         for (User user : users) {
             userMap.put(user.getId(),user);
@@ -139,6 +142,7 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     awardsUser.setWinTime(new Date());
                     awardsUser.setRaffleId(raffle.getId());
                     awardsUser.setInitiator(raffle.getUserId());
+                    awardsUser.setReport("0");
                     awardsUser.setHome(userMap.get(awardsUser.getUserId()).getHome());
                     awardsUser.setSign("0");
                     awardsUsers.add(awardsUser);
@@ -152,6 +156,9 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     awardsUser.setAwardId(award.getId());
                     awardsUser.setWinTime(new Date());
                     awardsUser.setRaffleId(raffle.getId());
+                    awardsUser.setInitiator(raffle.getUserId());
+                    awardsUser.setReport("0");
+                    awardsUser.setHome(userMap.get(awardsUser.getUserId()).getHome());
                     awardsUser.setSign("0");
                     awardsUsers.add(awardsUser);
                 });
@@ -159,7 +166,8 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
             }
             remainder=remainder-award.getNumber();
         }
-        awardsMapper.addAwardsUser(awardsUsers);
+        if (CollectionUtils.isNotEmpty(awardsUsers))
+            awardsMapper.addAwardsUser(awardsUsers);
     }
 
     @Override
@@ -205,6 +213,32 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
             awardsUser.setSign(SignEnum.ofName(awardsUserGetVO.getSign()).getCode());
         }
         awardsMapper.updateAwardsUser(awardsUser);
+    }
+
+    @Override
+    public List<AwardsUserGetVO> getAllAwards() {
+        List<AwardsUserGetVO> list = new ArrayList<>();
+        List<AwardsUser> awardUserByUser = awardsMapper.getAllAwardUser();
+        List<User> users = userService.list();
+        Map<String,User> userMap = new HashMap<>();
+        for (User user : users) {
+            userMap.put(user.getId(),user);
+        }
+        List<Awards> awards = awardsService.list();
+        Map<String,Awards> awardsMap = new HashMap<>();
+        for (Awards award : awards) {
+            awardsMap.put(award.getId(),award);
+        }
+        for (AwardsUser awardsUser : awardUserByUser) {
+            AwardsUserGetVO awardsUserGetVO = BeanUtil.copyProperties(awardsUser,AwardsUserGetVO.class);
+            User user = userMap.get(awardsUserGetVO.getUserId());
+            awardsUserGetVO.setNickname(user.getNickname());
+            Awards award = awardsMap.get(awardsUser.getAwardId());
+            awardsUserGetVO.setPrizeName(award.getPrizeName());
+            awardsUserGetVO.setSign(SignEnum.ofCode(awardsUserGetVO.getSign()).getMessage());
+            list.add(awardsUserGetVO);
+        }
+        return list;
     }
 
 }

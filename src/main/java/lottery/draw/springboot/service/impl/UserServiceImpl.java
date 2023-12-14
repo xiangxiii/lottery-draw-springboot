@@ -88,6 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
+    @Override
     public Map<String,User> getMapByUserIds(List<String> userIds) {
         if (CollectionUtils.isEmpty(userIds)){
             return new HashMap<>();
@@ -101,6 +102,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         return userMap;
     }
+
+
 
     /**
      * 执行密码加密

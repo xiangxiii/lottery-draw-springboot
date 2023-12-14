@@ -32,8 +32,13 @@ public class AwardsController {
     private ICityService cityService;
 
     @PostMapping("/byUser")
-    public Result deleteBatch(@RequestBody AwardsUserGetVO awardsUserGetVO) {
+    public Result getAwardsByUser(@RequestBody AwardsUserGetVO awardsUserGetVO) {
         return Result.success(awardsService.getAwardsByUser(awardsUserGetVO));
+    }
+
+    @PostMapping("/byAdmin")
+    public Result getAllAwards(@RequestBody AwardsUserGetVO awardsUserGetVO) {
+        return Result.success(awardsService.getAllAwards());
     }
 
     @GetMapping("/{raffleId}")

@@ -16,7 +16,7 @@ import java.util.Map;
  * @since 2023-10-24
  */
 public interface IPrizeService extends IService<Prize> {
-    List<Map<String, Object>> getmap();
 
-    List<Station> getlist();
+
+
 }

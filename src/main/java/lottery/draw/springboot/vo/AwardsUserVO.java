@@ -25,4 +25,6 @@ public class AwardsUserVO {
     private List<User> userList;
 
     private String initiator;
+
+    private String avatar;
 }

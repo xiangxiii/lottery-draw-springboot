@@ -22,5 +22,7 @@ public interface AwardsMapper extends BaseMapper<Awards> {
 
     List<AwardsUser> getAwardUserByUser(AwardsUserGetVO awardsUserGetVO);
 
+    List<AwardsUser> getAllAwardUser();
+
     void updateAwardsUser(AwardsUser awardUser);
 }

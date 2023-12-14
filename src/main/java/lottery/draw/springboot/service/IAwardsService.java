@@ -47,5 +47,13 @@ public interface IAwardsService extends IService<Awards> {
      */
     void updateMyAward(AwardsUserGetVO awardsUserGetVO);
 
-
+    /**
+     * 管理员查看所有未完成的中奖记录
+     * @param
+     * @throws
+     * @return
+     * @author liux
+     * @date 2023/12/12 14:26
+     */
+    List<AwardsUserGetVO> getAllAwards();
 }

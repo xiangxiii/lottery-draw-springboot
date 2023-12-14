@@ -16,5 +16,7 @@ public class test {
         LocalDateTime startTime = LocalDateTime.parse("2023-09-01 11:11:11", formatterimport);
         System.out.println(startTime);
         System.out.println((int) (Math.random() * 100 + 1));
+
+        System.out.println("12345".substring(0,3));
     }
 }

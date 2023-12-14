@@ -18,7 +18,8 @@
     <update id="updateAwardsUser">
         UPDATE tb_awards_user
         SET home=#{home},
-            sign=#{sign}
+            sign=#{sign},
+            report=#{report}
         WHERE id=#{id};
     </update>
 
@@ -46,8 +47,16 @@
             <if test="sign!= null and id != ''">
                 AND sign = #{sign,jdbcType=VARCHAR}
             </if>
+            <if test="report!= null and report != ''">
+                AND report = #{report,jdbcType=VARCHAR}
+            </if>
         </where>
-        order by sign
+        order by win_time
+    </select>
+    <select id="getAllAwardUser" resultType="lottery.draw.springboot.entity.AwardsUser">
+         select * from tb_awards_user
+         where sign = "0"
+         order by win_time
     </select>
 
 </mapper>
