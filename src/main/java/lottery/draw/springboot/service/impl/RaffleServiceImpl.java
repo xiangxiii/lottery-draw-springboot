@@ -48,7 +48,8 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
     private RaffleMapper raffleMapper;
 
     DateTimeFormatter formatterDaily = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
+    DateTimeFormatter formatterDailySS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM月dd日 HH:mm");
     @Override
     public void raffleAdd(RaffleVO raffleVO) {
 
@@ -57,7 +58,7 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         Date now = new Date();
         raffle.setCreateTime(now);
         raffle.setNumber(0);
-
+        raffle.setClick(0);
         String datetime = raffleVO.getDatetime()+":00";
         LocalDateTime time = LocalDateTime.parse(raffleVO.getDatetime(),formatterDaily);
         raffle.setTime(time);
@@ -81,7 +82,9 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         //保存抽奖活动信息
         Raffle raffle = BeanUtil.copyProperties(raffleVO,Raffle.class);
         raffle.setUpdateTime(new Date());
-//        String datetime = raffleVO.getDatetime()+":00";
+        if (raffleVO.getDatetime().length() == 16){
+            raffleVO.setDatetime(raffleVO.getDatetime()+":00");
+        }
         LocalDateTime time = LocalDateTime.parse(raffleVO.getDatetime(),formatterDaily);
         raffle.setTime(time);
         updateById(raffle);
@@ -126,6 +129,11 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             raffleListVO.setState(StateEnum.ofCode(raffleListVO.getState()).getMessage());
             raffleListVO.setDatetime(raffle.getTime().format(formatter));
             raffleListVO.setNickname(userMap.get(raffle.getUserId()).getNickname());
+            raffleListVO.setUrl(userMap.get(raffle.getUserId()).getAvatar());
+            double v = Double.parseDouble(raffleListVO.getNumber()) * 100 / Double.parseDouble(raffleListVO.getClick());
+            if (v>=0 && v<=100){
+                raffleListVO.setParticipationRate((int)v+"%");
+            }
             raffleListVOS.add(raffleListVO);
         }
 
@@ -134,8 +142,11 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
 
     @Override
     public RaffleVO raffleDetail(String raffleId) {
+        //计数
+        this.addClick(raffleId);
         Raffle raffle = this.getById(raffleId);
         RaffleVO raffleVO = BeanUtil.copyProperties(raffle,RaffleVO.class);
+        //添加奖品信息
         List<Awards> awards = awardsService.getListByRaffleId(raffle.getId());
         List<AwardsVO> awardsVOS = new ArrayList<>();
         for (Awards award : awards) {
@@ -143,8 +154,15 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             awardsVOS.add(awardsVO);
         }
         raffleVO.setAwardsVOS(awardsVOS);
+
         raffleVO.setUserName(userService.getById(raffle.getUserId()).getUsername());
         raffleVO.setDatetime(raffle.getTime().format(formatterDaily));
+        double v = Double.parseDouble(raffleVO.getNumber()) * 100 / Double.parseDouble(raffleVO.getClick());
+        if (v>=0 && v<=100){
+            raffleVO.setParticipationRate((int)v+"%");
+        }else{
+            raffleVO.setParticipationRate("0%");
+        }
 
         List<RaffleUser> listRaffleUser = raffleMapper.getListRaffleUser(raffleId, null);
         List<String> collect = listRaffleUser.stream().map(RaffleUser::getUserId).collect(Collectors.toList());
@@ -176,6 +194,7 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             awardsVO.setAwardsName("一等奖");
             awardsVO.setNumber(1);
             awardsVO.setPrizeName("奖品名称");
+            awardsVO.setAvatar("http://tmp/pjbtgjidAR4N03792ac3c38359e52ce086160183f87c.png");
             awardsVO.setSort(1);
             awardsVOS.add(awardsVO);
             raffleVO.setAwardsVOS(awardsVOS);
@@ -192,7 +211,7 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             raffleVO.setAwardsVOS(awardsVOS);
             raffleVO.setState(StateEnum.ofCode(raffleVO.getState()).getMessage());
             raffleVO.setUserName(userService.getById(raffles.get(0).getUserId()).getUsername());
-            raffleVO.setDatetime(raffles.get(0).getTime().format(formatterDaily));
+            raffleVO.setDatetime(raffles.get(0).getTime().format(formatterDailySS));
             return raffleVO;
         }
     }
@@ -281,5 +300,10 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         }
     }
 
+    public void addClick(String id){
+        Raffle byId = this.getById(id);
+        byId.setClick(byId.getClick()+1);
+        this.updateById(byId);
+    }
 
 }

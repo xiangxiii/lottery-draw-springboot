@@ -26,9 +26,9 @@ public class AwardsUserGetVO {
     private String prizeName;
 
     @ApiModelProperty("中奖时间")
-    private Date winTime;
+    private LocalDateTime winTime;
 
-    @ApiModelProperty("中奖时间")
+    @ApiModelProperty("签收时间")
     private LocalDateTime getAwardsTime;
 
     @ApiModelProperty("是否签收")

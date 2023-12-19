@@ -22,7 +22,7 @@ public class AwardsUser {
     private String awardId;
 
     @ApiModelProperty("中奖时间")
-    private Date winTime;
+    private LocalDateTime winTime;
 
     @ApiModelProperty("中奖时间")
     private LocalDateTime getAwardsTime;

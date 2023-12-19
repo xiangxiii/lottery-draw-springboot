@@ -57,4 +57,6 @@ public class Raffle implements Serializable {
       @ApiModelProperty("状态")
       private String state;
 
+      @ApiModelProperty("抽奖限定人数")
+      private Integer click;
 }

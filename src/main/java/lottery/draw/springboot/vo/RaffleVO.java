@@ -29,6 +29,10 @@ public class RaffleVO {
 
     private List<AwardsVO> awardsVOS;
 
+    private String click;
+
+    private String participationRate;
+
     //参加抽奖的用户id列表
     private List<String> ids;
 

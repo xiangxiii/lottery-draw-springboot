@@ -13,9 +13,11 @@ import lottery.draw.springboot.vo.AwardsUserGetVO;
 import lottery.draw.springboot.vo.AwardsUserVO;
 import lottery.draw.springboot.vo.AwardsVO;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,12 +141,13 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     AwardsUser awardsUser = new AwardsUser();
                     awardsUser.setUserId(userids.get(key));
                     awardsUser.setAwardId(award.getId());
-                    awardsUser.setWinTime(new Date());
+                    awardsUser.setWinTime(raffle.getTime());
                     awardsUser.setRaffleId(raffle.getId());
                     awardsUser.setInitiator(raffle.getUserId());
                     awardsUser.setReport("0");
                     awardsUser.setHome(userMap.get(awardsUser.getUserId()).getHome());
                     awardsUser.setSign("0");
+
                     awardsUsers.add(awardsUser);
                     userids.remove(key);
                 }
@@ -154,7 +157,7 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     AwardsUser awardsUser = new AwardsUser();
                     awardsUser.setUserId(userids.get(key));
                     awardsUser.setAwardId(award.getId());
-                    awardsUser.setWinTime(new Date());
+                    awardsUser.setWinTime(raffle.getTime());
                     awardsUser.setRaffleId(raffle.getId());
                     awardsUser.setInitiator(raffle.getUserId());
                     awardsUser.setReport("0");
@@ -208,6 +211,9 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
 
     @Override
     public void updateMyAward(AwardsUserGetVO awardsUserGetVO) {
+        if (StringUtils.equals(awardsUserGetVO.getSign(),"1") && Objects.isNull(awardsUserGetVO.getGetAwardsTime())){
+            awardsUserGetVO.setGetAwardsTime(LocalDateTime.now());
+        }
         AwardsUser awardsUser = BeanUtil.copyProperties(awardsUserGetVO,AwardsUser.class);
         if (Objects.nonNull(SignEnum.ofName(awardsUserGetVO.getSign()))){
             awardsUser.setSign(SignEnum.ofName(awardsUserGetVO.getSign()).getCode());

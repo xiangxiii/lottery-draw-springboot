@@ -38,7 +38,7 @@ public interface IAwardsService extends IService<Awards> {
     List<AwardsUserGetVO> getAwardsByUser(AwardsUserGetVO awardsUserGetVO);
 
     /**
-     * 改变中奖信息
+     * 改变中奖信息(发货签收)
      * @param
      * @throws
      * @return

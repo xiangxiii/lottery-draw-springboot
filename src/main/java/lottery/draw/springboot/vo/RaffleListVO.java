@@ -27,5 +27,9 @@ public class RaffleListVO {
 
     private String nickname;
 
+    private String url;
 
+    private String click;
+
+    private String participationRate;
 }

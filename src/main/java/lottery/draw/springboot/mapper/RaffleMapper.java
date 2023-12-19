@@ -46,4 +46,6 @@ public interface RaffleMapper extends BaseMapper<Raffle> {
      * @date 2023/11/27 15:50
      */
     List<RaffleUser> getListRaffleUser(String raffleId,String userId);
+
+
 }

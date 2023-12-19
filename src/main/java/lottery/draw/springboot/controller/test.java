@@ -18,5 +18,8 @@ public class test {
         System.out.println((int) (Math.random() * 100 + 1));
 
         System.out.println("12345".substring(0,3));
+
+        double i = 0.0 / 0;
+        System.out.println(i);
     }
 }
