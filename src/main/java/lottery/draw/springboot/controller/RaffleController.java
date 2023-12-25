@@ -30,18 +30,20 @@ public class RaffleController {
     @PostMapping
     public Result save(@RequestBody RaffleVO raffleVO) {
         if (Objects.isNull(raffleVO.getId())){
-            raffleService.raffleAdd(raffleVO);
+            return Result.success(raffleService.raffleAdd(raffleVO));
         }else{
-            raffleService.raffleUpdate(raffleVO);
+            return Result.success(raffleService.raffleUpdate(raffleVO));
         }
-
-        return Result.success();
     }
-
 
     @PostMapping("/list")
     public Result list(@RequestBody RaffleVO raffleVO) {
         return Result.success(raffleService.raffleList(raffleVO));
+    }
+
+    @PostMapping("/getByQuery")
+    public Result getByQuery(@RequestBody String query) {
+        return Result.success(raffleService.getByQuery(query));
     }
 
     @GetMapping("/{id}")

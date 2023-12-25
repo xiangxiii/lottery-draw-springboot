@@ -4,6 +4,7 @@ package lottery.draw.springboot.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lottery.draw.springboot.common.Constants;
+import lottery.draw.springboot.vo.RaffleVO;
 import lottery.draw.springboot.vo.UserVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,18 @@ public class UserController {
     public Result save(@RequestBody UserVO user) {
         userService.updateById(BeanUtil.copyProperties(user, User.class));
         return Result.success("update");
+    }
+
+    @PostMapping("/list")
+    public Result list(@RequestBody UserVO userVO) {
+        return Result.success(userService.userList(userVO));
+    }
+
+    @PostMapping("/updateRole")
+    public Result updateRole(@RequestBody UserVO userVO) {
+        User byId = userService.getById(userVO.getId());
+        byId.setRole(userVO.getRole());
+        return Result.success(userService.updateById(byId));
     }
 
     @DeleteMapping("/{id}")

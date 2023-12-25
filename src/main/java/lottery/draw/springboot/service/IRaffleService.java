@@ -28,7 +28,7 @@ public interface IRaffleService extends IService<Raffle> {
      * @author liux
      * @date 2023/11/9 15:31
      */
-    void raffleAdd(RaffleVO raffleVO);
+    RaffleVO raffleAdd(RaffleVO raffleVO);
 
     /**
      * 修改抽奖活动
@@ -38,7 +38,7 @@ public interface IRaffleService extends IService<Raffle> {
      * @author liux
      * @date 2023/11/9 17:05
      */
-    void raffleUpdate(RaffleVO raffleVO);
+    RaffleVO raffleUpdate(RaffleVO raffleVO);
 
     /**
      * 抽奖活动列表
@@ -69,6 +69,8 @@ public interface IRaffleService extends IService<Raffle> {
      * @date 2023/11/21 22:00
      */
     RaffleVO raffleExit(String userId);
+
+    RaffleVO getByQuery(String query);
 
     /**
      * 用户参加抽奖

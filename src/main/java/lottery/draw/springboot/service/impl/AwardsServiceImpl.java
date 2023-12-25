@@ -197,12 +197,16 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
     public List<AwardsUserGetVO> getAwardsByUser(AwardsUserGetVO vo) {
         List<AwardsUserGetVO> list = new ArrayList<>();
         List<AwardsUser> awardUserByUser = awardsMapper.getAwardUserByUser(vo);
+
+        Map<String, User> userMap = userService.list().stream().collect(Collectors.toMap(User::getId, user -> user));
+        Map<String, Awards> awardsMap = awardsService.list().stream().collect(Collectors.toMap(Awards::getId, awards -> awards));
+        //补充信息
         for (AwardsUser awardsUser : awardUserByUser) {
             AwardsUserGetVO awardsUserGetVO = BeanUtil.copyProperties(awardsUser,AwardsUserGetVO.class);
-            User user = userService.getById(awardsUserGetVO.getUserId());
-            awardsUserGetVO.setNickname(user.getNickname());
-            Awards awards = awardsService.getById(awardsUser.getAwardId());
-            awardsUserGetVO.setPrizeName(awards.getPrizeName());
+            awardsUserGetVO.setNickname(userMap.get(awardsUserGetVO.getUserId()).getNickname());
+            awardsUserGetVO.setInitiatorNickname(userMap.get(awardsUserGetVO.getInitiator()).getNickname());
+            awardsUserGetVO.setPrizeName(awardsMap.get(awardsUser.getAwardId()).getPrizeName());
+
             awardsUserGetVO.setSign(SignEnum.ofCode(awardsUserGetVO.getSign()).getMessage());
             list.add(awardsUserGetVO);
         }

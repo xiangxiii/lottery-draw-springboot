@@ -25,8 +25,8 @@ public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-      @TableId(value = "id", type = IdType.AUTO)
-      private Integer id;
+      @TableId(value = "id")
+      private String id;
 
       @ApiModelProperty("收货地址")
       private String address;
@@ -38,7 +38,7 @@ public class Address implements Serializable {
       private String phone;
 
       @ApiModelProperty("用户ID")
-      private Integer userId;
+      private String userId;
 
 
 }

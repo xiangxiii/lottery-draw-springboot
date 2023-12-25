@@ -2,9 +2,12 @@ package lottery.draw.springboot.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
 
@@ -31,12 +34,16 @@ public class AddressController {
 
     @PostMapping
     public Result save(@RequestBody Address address) {
-        addressService.saveOrUpdate(address);
+        if (Objects.isNull(address.getId())){
+            addressService.save(address);
+        }else{
+            addressService.updateById(address);
+        }
         return Result.success();
     }
 
     @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id) {
+    public Result delete(@PathVariable String id) {
         addressService.removeById(id);
         return Result.success();
     }
@@ -53,16 +60,18 @@ public class AddressController {
     }
 
     @GetMapping("/{id}")
-    public Result findOne(@PathVariable Integer id) {
+    public Result findOne(@PathVariable String id) {
         return Result.success(addressService.getById(id));
     }
 
-    @GetMapping("/page")
-    public Result findPage(@RequestParam Integer pageNum,
-    @RequestParam Integer pageSize) {
+    @PostMapping("/list")
+    public Result list(@RequestBody Address address) {
         QueryWrapper<Address> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(address.getUserId())){
+            queryWrapper.eq("user_id",address.getUserId());
+        }
         queryWrapper.orderByDesc("id");
-        return Result.success(addressService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        return Result.success(addressService.list( queryWrapper));
     }
 }
 

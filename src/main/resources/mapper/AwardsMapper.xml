@@ -38,7 +38,7 @@
     <select id="getAwardUserByUser" resultType="lottery.draw.springboot.entity.AwardsUser">
         select * from tb_awards_user
         <where>
-            <if test="userId!= null and raffleId != ''">
+            <if test="userId!= null and userId != ''">
                 AND user_id = #{userId,jdbcType=VARCHAR}
             </if>
             <if test="initiator!= null and id != ''">

@@ -9,9 +9,9 @@ import java.util.Map;
  */
 
 public enum RaffleTypeEnum {
-    EXIT("0","普通抽奖"),
-    START("1","实名抽奖"),
-    OPEN("2","已签收"),
+    NORMAL("1","普通抽奖"),
+    REAL_NAME("2","实名抽奖"),
+    INTERNAL("3","内部抽奖"),
 
     ;
     private String code;

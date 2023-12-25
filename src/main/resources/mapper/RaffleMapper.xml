@@ -3,8 +3,8 @@
 <mapper namespace="lottery.draw.springboot.mapper.RaffleMapper">
 
     <insert id="joinRaffle" parameterType="lottery.draw.springboot.entity.RaffleUser">
-        INSERT INTO tb_raffle_user(raffle_id, user_id,sort)
-        VALUES(#{raffleId},#{userId},#{sort});
+        INSERT INTO tb_raffle_user(raffle_id, user_id,sort,real_name)
+        VALUES(#{raffleId},#{userId},#{sort},#{realName});
     </insert>
 
     <delete id="outRaffle">
@@ -30,4 +30,11 @@
             </if>
         </where>
     </select>
+
+    <select id="getNewSort" resultType="lottery.draw.springboot.entity.RaffleUser">
+        SELECT * FROM tb_raffle_user WHERE
+        raffle_id = #{raffleId,jdbcType=VARCHAR}
+        ORDER BY sort DESC LIMIT 1
+    </select>
+    <select id="getByQuery" resultType="lottery.draw.springboot.entity.Raffle"></select>
 </mapper>

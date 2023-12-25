@@ -47,5 +47,5 @@ public interface RaffleMapper extends BaseMapper<Raffle> {
      */
     List<RaffleUser> getListRaffleUser(String raffleId,String userId);
 
-
+    RaffleUser getNewSort(String raffleId);
 }

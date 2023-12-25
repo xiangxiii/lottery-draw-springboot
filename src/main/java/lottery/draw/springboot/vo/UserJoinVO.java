@@ -11,4 +11,7 @@ public class UserJoinVO {
     private String userId;
 
     private String raffleId;
+
+    private String realName;
+
 }

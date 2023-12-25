@@ -32,4 +32,7 @@ public class RaffleListVO {
     private String click;
 
     private String participationRate;
+
+    private String query;
+
 }

@@ -7,7 +7,6 @@ import lottery.draw.springboot.mapper.CityMapper;
 import lottery.draw.springboot.service.ICityService;
 import lottery.draw.springboot.vo.CityVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,11 +20,9 @@ import java.util.stream.Collectors;
  * @date 2023/7/26 13:27
  */
 @Service
-@Primary
 public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements ICityService {
     @Autowired
     private CityMapper cityMapper;
-
 
     @Override
     public List<CityVO> cityList(){
@@ -42,17 +39,17 @@ public class CityServiceImpl extends ServiceImpl<CityMapper, City> implements IC
         List<CityVO> newCity = new ArrayList<>();
 
         for (CityVO cityVO : city){
-            //省
-            if (Objects.equals(cityVO.getType(),"1")){
-                newCity.add(cityVO);
-            }
-            for (CityVO vo : city){
-                if (Objects.equals(vo.getPid(),cityVO.getId())){
-                    if (Objects.isNull(cityVO.getChildren())){
-                        cityVO.setChildren(new ArrayList<>());
-                    }
-                    cityVO.getChildren().add(vo);
+                //省
+                if (Objects.equals(cityVO.getType(),"1")){
+                    newCity.add(cityVO);
                 }
+                for (CityVO vo : city){
+                    if (Objects.equals(vo.getPid(),cityVO.getId())){
+                        if (Objects.isNull(cityVO.getChildren())){
+                            cityVO.setChildren(new ArrayList<>());
+                        }
+                        cityVO.getChildren().add(vo);
+                    }
             }
         }
         return newCity;

@@ -31,7 +31,7 @@ public class AwardsUserGetVO {
     @ApiModelProperty("签收时间")
     private LocalDateTime getAwardsTime;
 
-    @ApiModelProperty("是否签收")
+    @ApiModelProperty("是否签收   0待发货  1发货  -1签收")
     private String sign;
 
     @ApiModelProperty("抽奖活动id")
@@ -43,6 +43,9 @@ public class AwardsUserGetVO {
 
     @ApiModelProperty("发起人")
     private String initiator;
+
+    @ApiModelProperty("发起人昵称")
+    private String initiatorNickname;
 
     @ApiModelProperty("举报")
     private String report;

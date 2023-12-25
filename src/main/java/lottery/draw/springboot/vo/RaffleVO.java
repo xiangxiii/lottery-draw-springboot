@@ -1,5 +1,6 @@
 package lottery.draw.springboot.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lottery.draw.springboot.entity.User;
 
@@ -45,4 +46,11 @@ public class RaffleVO {
     //奖项以及分配情况
     private List<AwardsUserVO> awardsUserVOList;
 
+    private String query;
+
+    //查询条件
+    private String sort;
+
+    //1为倒序 0为顺序
+    private int desc;
 }

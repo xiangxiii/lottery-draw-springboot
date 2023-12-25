@@ -1,5 +1,7 @@
 package lottery.draw.springboot.service;
 
+import lottery.draw.springboot.vo.RaffleListVO;
+import lottery.draw.springboot.vo.RaffleVO;
 import lottery.draw.springboot.vo.UserVO;
 import lottery.draw.springboot.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,4 +23,6 @@ public interface IUserService extends IService<User> {
     User register(UserVO userVO);
 
     Map<String,User> getMapByUserIds(List<String> userIds);
+
+    List<UserVO> userList(UserVO userVO);
 }

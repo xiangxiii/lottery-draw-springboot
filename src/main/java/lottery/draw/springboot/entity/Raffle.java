@@ -54,9 +54,12 @@ public class Raffle implements Serializable {
       @JSONField(format = DatePattern.NORM_DATETIME_PATTERN)
       private Date updateTime;
 
-      @ApiModelProperty("状态")
+      @ApiModelProperty("状态  编辑中1，进行中2，结束3")
       private String state;
 
       @ApiModelProperty("抽奖限定人数")
       private Integer click;
+
+      @ApiModelProperty("查询码")
+      private String query;
 }

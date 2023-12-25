@@ -103,6 +103,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userMap;
     }
 
+    @Override
+    public List<UserVO> userList(UserVO userVO) {
+        QueryWrapper<User> queryUser = new QueryWrapper<>();
+        if (Objects.nonNull(userVO.getRole())){
+            queryUser.eq("role", userVO.getRole());
+        }
+        List<User> list = this.list(queryUser);
+        List<UserVO> result = new ArrayList<>();
+        for (User user : list) {
+            UserVO userVO1 = BeanUtil.copyProperties(user, UserVO.class);
+            userVO1.setRole(RoleEnum.ofCode(userVO1.getRole()).getMessage());
+            result.add(userVO1);
+        }
+
+        return result;
+    }
 
 
     /**
