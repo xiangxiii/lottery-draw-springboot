@@ -3,6 +3,9 @@ package lottery.draw.springboot.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Constants;
+import lottery.draw.springboot.mapper.AwardsMapper;
+import lottery.draw.springboot.mapper.RaffleMapper;
+import lottery.draw.springboot.vo.AwardsUserGetVO;
 import lottery.draw.springboot.vo.UserVO;
 import lottery.draw.springboot.entity.User;
 import lottery.draw.springboot.enums.RoleEnum;
@@ -31,6 +34,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private RaffleMapper raffleMapper;
+
+    @Autowired
+    private AwardsServiceImpl awardsService;
 
     @Override
     public UserVO login(UserVO userVO) {
@@ -118,6 +127,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         return result;
+    }
+
+    @Override
+    public List<AwardsUserGetVO> getReport() {
+        AwardsUserGetVO vo = new AwardsUserGetVO();
+        vo.setReport("1");
+        System.out.println(awardsService.getAwardsByUser(vo));
+
+        return null;
     }
 
 

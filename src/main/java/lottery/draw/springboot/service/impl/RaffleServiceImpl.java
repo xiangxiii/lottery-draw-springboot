@@ -96,11 +96,10 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
         }
         LocalDateTime time = LocalDateTime.parse(raffleVO.getDatetime(),formatterDaily);
         raffle.setTime(time);
-        updateById(raffle);
-        //
         if (StringUtils.equals(raffle.getType(), RaffleTypeEnum.INTERNAL.getCode()) && StringUtils.equals(raffle.getState(),StateEnum.START.getCode()) && StringUtils.isBlank(raffle.getQuery())){
             raffle.setQuery(UUIDUtil.getUUID6());
         }
+        updateById(raffle);
 
         raffle = getById(raffleVO.getId());
         awardsService.awardsUpdate(raffleVO.getAwardsVOS(),raffle);
@@ -279,7 +278,7 @@ public class RaffleServiceImpl extends ServiceImpl<RaffleMapper, Raffle> impleme
             if(Objects.isNull(ru)){
                 raffleUser.setSort(1);
             }else{
-                raffleUser.setSort(ru.getSort());
+                raffleUser.setSort(ru.getSort()+1);
             }
             raffleMapper.joinRaffle(raffleUser);
             raffleService.updateById(raffle);

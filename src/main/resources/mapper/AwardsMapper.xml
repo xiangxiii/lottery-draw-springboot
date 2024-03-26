@@ -4,7 +4,7 @@
 
     <insert id="addAwardsUser" parameterType="java.util.List">
         insert into tb_awards_user
-        (user_id, award_id, sign,raffle_id)
+        (user_id, award_id, sign,raffle_id,win_time,initiator,report,home)
         values
         <foreach collection="list" index="index" item="item" separator=",">
             <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -12,6 +12,10 @@
                     #{item.awardId,jdbcType=VARCHAR},
                     #{item.sign,jdbcType=VARCHAR},
                     #{item.raffleId,jdbcType=VARCHAR},
+                    #{item.winTime,jdbcType=VARCHAR},
+                    #{item.initiator,jdbcType=VARCHAR},
+                    "0",
+                    "未填写收货地址",
             </trim>
         </foreach>
     </insert>

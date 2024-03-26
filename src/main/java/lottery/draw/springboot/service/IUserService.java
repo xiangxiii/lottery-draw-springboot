@@ -1,5 +1,6 @@
 package lottery.draw.springboot.service;
 
+import lottery.draw.springboot.vo.AwardsUserGetVO;
 import lottery.draw.springboot.vo.RaffleListVO;
 import lottery.draw.springboot.vo.RaffleVO;
 import lottery.draw.springboot.vo.UserVO;
@@ -25,4 +26,6 @@ public interface IUserService extends IService<User> {
     Map<String,User> getMapByUserIds(List<String> userIds);
 
     List<UserVO> userList(UserVO userVO);
+
+    List<AwardsUserGetVO> getReport();
 }

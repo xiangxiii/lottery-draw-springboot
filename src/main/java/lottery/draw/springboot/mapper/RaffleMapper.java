@@ -1,5 +1,6 @@
 package lottery.draw.springboot.mapper;
 
+import lottery.draw.springboot.entity.AwardsUser;
 import lottery.draw.springboot.entity.Raffle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import lottery.draw.springboot.entity.RaffleUser;
@@ -35,6 +36,14 @@ public interface RaffleMapper extends BaseMapper<Raffle> {
      */
     RaffleUser getRaffleUser(String raffleId,String userId);
 
+    /**
+     * 提出用户
+     * @param
+     * @throws
+     * @return
+     * @author liux
+     * @date 2024/1/3 10:32
+     */
     void outRaffle(String raffleId,String userId);
 
     /**
@@ -48,4 +57,6 @@ public interface RaffleMapper extends BaseMapper<Raffle> {
     List<RaffleUser> getListRaffleUser(String raffleId,String userId);
 
     RaffleUser getNewSort(String raffleId);
+
+
 }

@@ -4,10 +4,13 @@ import lottery.draw.springboot.entity.Prize;
 import lottery.draw.springboot.mapper.PrizeMapper;
 import lottery.draw.springboot.service.IPrizeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import net.jodah.expiringmap.ExpirationPolicy;
+import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -25,4 +28,29 @@ public class PrizeServiceImpl extends ServiceImpl<PrizeMapper, Prize> implements
     JdbcTemplate jdbcTemplate;
 
 
+    @Override
+    public void test() throws InterruptedException {
+        ExpiringMap<String, String> dataMap = ExpiringMap.builder()
+                .maxSize(1000)
+                .expiration(1000, TimeUnit.MILLISECONDS)
+                .expirationPolicy(ExpirationPolicy.CREATED)
+                .build();
+        dataMap.put("1","1");
+        dataMap.put("2","2");
+        System.out.println(dataMap);
+
+        Thread.sleep(900);
+        dataMap.put("1","1",1000, TimeUnit.MILLISECONDS);
+        dataMap.setExpiration("2",1000, TimeUnit.MILLISECONDS);
+        System.out.println(dataMap);
+
+
+        Thread.sleep(900);
+        System.out.println(dataMap);
+
+
+        dataMap.put("1","1");
+        dataMap.put("2","2");
+        System.out.println(dataMap);
+    }
 }

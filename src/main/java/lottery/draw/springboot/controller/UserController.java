@@ -2,14 +2,21 @@ package lottery.draw.springboot.controller;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lottery.draw.springboot.common.Constants;
+import lottery.draw.springboot.entity.Code;
+import lottery.draw.springboot.entity.WechatTokenEntity;
 import lottery.draw.springboot.vo.RaffleVO;
 import lottery.draw.springboot.vo.UserVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
 
@@ -71,10 +78,47 @@ public class UserController {
         return Result.success(userService.updateById(byId));
     }
 
+    @PostMapping("/wx")
+    public Result wx(@RequestBody Code code) {
+        String url = "https://api.weixin.qq.com/sns/jscode2session" +
+                "?appid=" + "wx0a6d7386aa68f627"+
+                "&secret=" + "696a4dbf7efd1bdadca0aea0df651fdb"+
+                "&js_code=" + code.getCode() +
+                "&grant_type=authorization_code";
+        String s = HttpUtil.get(url);
+        JSONObject jsonObject = JSON.parseObject(s);
+        String openid = jsonObject.getString("openid");
+        String session_key = jsonObject.getString("session_key");
+        WechatTokenEntity wechatTokenEntity = new WechatTokenEntity();
+        wechatTokenEntity.setOpenid(openid);
+        wechatTokenEntity.setSession_key(session_key);
+        return Result.success(wechatTokenEntity);
+    }
+
+    @PostMapping("/wxlogin")
+    public Result wxlogin(@RequestBody Code code) {
+        User byId = userService.getById(code.getOpenid());
+        if (Objects.isNull(byId)){
+            User user = new User();
+            user.setId(code.getOpenid());
+            user.setUsername(code.getOpenid());
+            user.setNickname(code.getName());
+            user.setAvatar(code.getImg());
+            user.setRole("2");
+            userService.save(user);
+        }
+        return Result.success(userService.getById(code.getOpenid()));
+    }
+
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id) {
         userService.removeById(id);
         return Result.success();
+    }
+
+    @GetMapping("/report")
+    public Result report() {
+        return Result.success(userService.getReport());
     }
 
     @PostMapping("/del/batch")

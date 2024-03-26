@@ -2,7 +2,6 @@ package lottery.draw.springboot.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lottery.draw.springboot.service.ICityService;
 import lottery.draw.springboot.vo.AwardsUserGetVO;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AwardsController {
     @Resource
     private IAwardsService awardsService;
-    @Resource
-    private ICityService cityService;
 
     @PostMapping("/byUser")
     public Result getAwardsByUser(@RequestBody AwardsUserGetVO awardsUserGetVO) {
@@ -59,13 +56,6 @@ public class AwardsController {
         awardsService.updateMyAward(awardsUserGetVO);
         return Result.success();
     }
-
-    @PostMapping("/city")
-    public Result cityList(@RequestBody String id) {
-
-        return Result.success(cityService.cityList());
-    }
-
 
 }
 

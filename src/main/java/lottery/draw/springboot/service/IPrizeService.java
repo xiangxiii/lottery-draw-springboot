@@ -2,10 +2,7 @@ package lottery.draw.springboot.service;
 
 import lottery.draw.springboot.entity.Prize;
 import com.baomidou.mybatisplus.extension.service.IService;
-import lottery.draw.springboot.entity.Station;
 
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -17,6 +14,6 @@ import java.util.Map;
  */
 public interface IPrizeService extends IService<Prize> {
 
-
+    void test() throws InterruptedException;
 
 }

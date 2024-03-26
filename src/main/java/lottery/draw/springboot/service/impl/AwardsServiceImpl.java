@@ -3,6 +3,7 @@ package lottery.draw.springboot.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.entity.*;
+import lottery.draw.springboot.enums.RoleEnum;
 import lottery.draw.springboot.enums.SignEnum;
 import lottery.draw.springboot.mapper.AwardsMapper;
 import lottery.draw.springboot.mapper.RaffleMapper;
@@ -81,7 +82,7 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
         if (CollectionUtils.isEmpty(raffleIds)){
             return new HashMap<>();
         }
-        Map<String, AwardsVO> awardsVOMap = new HashMap<>();
+        Map<String, AwardsVO> awardsVOMap = new  HashMap<>();
         QueryWrapper<Awards> queryAward = new QueryWrapper<>();
         queryAward.in("raffle_id",raffleIds);
         if (Objects.nonNull(sort)){
@@ -141,7 +142,11 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     AwardsUser awardsUser = new AwardsUser();
                     awardsUser.setUserId(userids.get(key));
                     awardsUser.setAwardId(award.getId());
-                    awardsUser.setWinTime(raffle.getTime());
+                    if (LocalDateTime.now().isBefore(raffle.getTime())){
+                        awardsUser.setWinTime(LocalDateTime.now());
+                    }else{
+                        awardsUser.setWinTime(raffle.getTime());
+                    }
                     awardsUser.setRaffleId(raffle.getId());
                     awardsUser.setInitiator(raffle.getUserId());
                     awardsUser.setReport("0");
@@ -157,7 +162,11 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
                     AwardsUser awardsUser = new AwardsUser();
                     awardsUser.setUserId(userids.get(key));
                     awardsUser.setAwardId(award.getId());
-                    awardsUser.setWinTime(raffle.getTime());
+                    if (LocalDateTime.now().isBefore(raffle.getTime())){
+                        awardsUser.setWinTime(LocalDateTime.now());
+                    }else{
+                        awardsUser.setWinTime(raffle.getTime());
+                    }
                     awardsUser.setRaffleId(raffle.getId());
                     awardsUser.setInitiator(raffle.getUserId());
                     awardsUser.setReport("0");
@@ -204,11 +213,16 @@ public class AwardsServiceImpl extends ServiceImpl<AwardsMapper, Awards> impleme
         for (AwardsUser awardsUser : awardUserByUser) {
             AwardsUserGetVO awardsUserGetVO = BeanUtil.copyProperties(awardsUser,AwardsUserGetVO.class);
             awardsUserGetVO.setNickname(userMap.get(awardsUserGetVO.getUserId()).getNickname());
+
             awardsUserGetVO.setInitiatorNickname(userMap.get(awardsUserGetVO.getInitiator()).getNickname());
             awardsUserGetVO.setPrizeName(awardsMap.get(awardsUser.getAwardId()).getPrizeName());
 
             awardsUserGetVO.setSign(SignEnum.ofCode(awardsUserGetVO.getSign()).getMessage());
             list.add(awardsUserGetVO);
+        }
+
+        if (StringUtils.equals(vo.getReport(),"1")){
+            list.removeIf(awardsUserGetVO -> userMap.get(awardsUserGetVO.getInitiator()).getRole().equals(RoleEnum.BAN_USER.getCode()));
         }
         return list;
     }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lottery.draw.springboot.common.Result;
@@ -34,7 +35,6 @@ public class PrizeController {
 
     @PostMapping
     public Result save(@RequestBody String s) {
-
         return Result.success();
     }
 
@@ -68,12 +68,12 @@ public class PrizeController {
         return Result.success(prizeService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
-    @GetMapping("/alll")
-    public Result findAll1() {
-
-
-        return null;
+    @GetMapping("/test")
+    public Result test() throws InterruptedException {
+        prizeService.test();
+        return Result.success();
     }
+
 }
 
 
